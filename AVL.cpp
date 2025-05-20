@@ -163,24 +163,15 @@ NO* girarDireita(NO* y) {
         T1  T2               T2  T3  
    */  
 
-   // Passo 1: Armazene o filho esquerdo de 'y' em uma variável temporária 'x'.  
-   // Passo 2: Transfira a subárvore direita de 'x' para a subárvore esquerda de 'y'.  
-   // Passo 3: Atualize 'x' para ser o novo nó raiz da subárvore.  
-   // Passo 4: Recalcule as alturas dos nós afetados.  
-   // Passo 5: Retorne o novo nó raiz ('x').  
-
     NO* x = y->esq;  
     NO* T2 = x->dir; 
-
-    // Realiza a rotação  
+  
     x->dir = y;  
     y->esq = T2;  
 
-    // Atualiza as alturas  
     y->altura = maior(alturaNo(y->esq), alturaNo(y->dir)) + 1;  
     x->altura = maior(alturaNo(x->esq), alturaNo(x->dir)) + 1;  
 
-	// Retorna o novo nó raiz
 	return x;
 
 
@@ -196,20 +187,16 @@ NO* girarEsquerda(NO* x)
            T2 T3            T1 T2  
    */  
 
-    NO* y = x->dir;      // Passo 1: filho direito de x
-    NO* T2 = y->esq;     // Subárvore esquerda de y
+    NO* y = x->dir;
+    NO* T2 = y->esq;
 
-    // Passo 2: Transfere T2 para a direita de x
     x->dir = T2;
 
-    // Passo 3: y vira nova raiz da subárvore
     y->esq = x;
 
-    // Passo 4: Atualiza alturas
     x->altura = maior(alturaNo(x->esq), alturaNo(x->dir)) + 1;
     y->altura = maior(alturaNo(y->esq), alturaNo(y->dir)) + 1;
 
-    // Passo 5: Retorna nova raiz
     return y;
 }
 
@@ -268,17 +255,41 @@ NO* removerArvore(NO* no, int valor) {
     else if (valor > no->valor) {
         no->dir = removerArvore(no->dir, valor);
     }
-    else {
-                
-        // Caso 1: Nó sem filhos
-        // Se o nó não possui filhos (esquerda e direita são NULL), basta removê-lo e retornar NULL para o pai.
+    else 
+    {
+        if (no->dir == NULL && no->esq == NULL) 
+        {
+            free(no);
+            return NULL;
+        }
+        else if ( no->dir == NULL || no->esq == NULL ) 
+        {
+            NO* aux;
 
-        // Caso 2: Nó com apenas um filho
-        // Se o nó possui apenas um filho (esquerda ou direita), retorna o ponteiro para esse filho, liberando o nó atual.
+            if (no->dir != NULL && no->esq == NULL) 
+            {
+                aux = no->dir;
+            }
+            else 
+            {
+                aux = no->esq;
+            }
 
-        // Caso 3: Nó com dois filhos
-        // Se o nó possui dois filhos, encontra o sucessor (menor valor da subárvore direita),
-        // copia o valor do sucessor para o nó atual e remove recursivamente o sucessor.
+            free(no);
+            return aux;
+        } 
+        else 
+        {
+            NO* aux = no->esq;
+
+            while (aux->dir != NULL) 
+            {
+                aux = aux->dir;
+            }
+
+            no->valor = aux->valor;
+            no->esq = removerArvore(no->esq, aux->valor);
+        }
     }
     // Atualiza altura e balanceia
     no->altura = maior(alturaNo(no->esq), alturaNo(no->dir)) + 1;
