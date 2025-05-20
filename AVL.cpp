@@ -224,7 +224,7 @@ NO* balancearNo(NO* no) {
 }
 
 NO* insereArvore(NO* no, int valor) {
-    /* Inserção binária normal ----------------------------- */
+    /* Inserção binária normal -------------------------- */
     if (no == NULL) {
         return criaNO(valor);
     }
